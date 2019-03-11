@@ -34,7 +34,7 @@ class DRM_LSF(DRM):
                                   preexec_fn=exit_process_group,
                                   shell=True).decode()
 
-            task.drm_jobID = unicode(int(re.search(r'Job <(\d+)>', out).group(1)))
+            task.drm_jobID = str(int(re.search(r'Job <(\d+)>', out).group(1)))
         except (sp.CalledProcessError, ValueError):
             task.log.error('%s failed submission to %s: %s' % (task, task.drm, out))
             task.status = TaskStatus.failed

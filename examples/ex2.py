@@ -83,7 +83,7 @@ if __name__ == '__main__':
 
     args = p.parse_args()
 
-    cosmos = Cosmos('sqlite:///%s/sqlite.db' % os.path.dirname(os.path.abspath(__file__)),
+    cosmos = Cosmos('sqlite:///%s/sqlite.db?check_same_thread=False' % os.path.dirname(os.path.abspath(__file__)),
                     # example of how to change arguments if you're not using default_drm='local'
                     get_submit_args=partial(default_get_submit_args, parallel_env='smp'),
                     default_drm=args.drm,

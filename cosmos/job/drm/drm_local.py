@@ -21,7 +21,6 @@ class DRM_Local(DRM):
         super(DRM_Local, self).__init__(jobmanager)
 
     def submit_job(self, task):
-
         if task.time_req is not None:
             cmd = ['/usr/bin/timeout', '-k', '10', str(task.time_req), task.output_command_script_path]
         else:
@@ -44,6 +43,8 @@ class DRM_Local(DRM):
             p.wait(timeout=timeout)
             return True
         except sp.TimeoutExpired:
+            return False
+        except KeyError:
             return False
 
         return False

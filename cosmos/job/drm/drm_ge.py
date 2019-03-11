@@ -49,7 +49,7 @@ class DRM_GE(DRM):
             corrupt_data = {}
 
         for task in tasks:
-            jid = unicode(task.drm_jobID)
+            jid = str(task.drm_jobID)
             if jid not in qjobs or \
                any(finished_state in qjobs[jid]['state'] for finished_state in ['e', 'E']):
                 #
@@ -88,7 +88,7 @@ class DRM_GE(DRM):
             qjobs = qstat()
 
             def f(task):
-                return qjobs.get(unicode(task.drm_jobID), dict()).get('state', 'UNK_JOB_STATE')
+                return qjobs.get(str(task.drm_jobID), dict()).get('state', 'UNK_JOB_STATE')
 
             return {task.drm_jobID: f(task) for task in tasks}
         else:
@@ -164,7 +164,7 @@ class DRM_GE(DRM):
     def kill_tasks(self, tasks):
         for group in grouper(50, tasks):
             group = filter(lambda x: x is not None, group)
-            pids = ','.join(map(lambda t: unicode(t.drm_jobID), group))
+            pids = ','.join(map(lambda t: str(t.drm_jobID), group))
             subprocess.call(['qdel', pids], preexec_fn=exit_process_group)
 
 
@@ -222,11 +222,11 @@ def qacct(job_id, timeout=1200, quantum=15, logger=None, log_prefix=""):
     good_qacct_dict = None
     num_retries = int(timeout / quantum)
 
-    for i in xrange(num_retries):
+    for i in range(num_retries):
         qacct_returncode = 0
         try:
             qacct_stdout_str, qacct_stderr_str = check_output_and_stderr(
-                ['qacct', '-j', unicode(job_id)],
+                ['qacct', '-j', str(job_id)],
                 preexec_fn=exit_process_group)
             if qacct_stdout_str.strip():
                 break
@@ -336,7 +336,7 @@ def qsub(cmd_fn, stdout_fn, stderr_fn, addl_args=None, drm_name="GE", logger=Non
             env=os.environ, preexec_fn=exit_process_group, shell=True,
             stderr=subprocess.STDOUT).decode()
 
-        job_id = unicode(int(out))
+        job_id = str(int(out))
     except subprocess.CalledProcessError as cpe:
         logger.error('%s submission to %s (%s) failed with error %s: %s' %
                      (log_prefix, drm_name, qsub, cpe.returncode, cpe.output.decode().strip()))

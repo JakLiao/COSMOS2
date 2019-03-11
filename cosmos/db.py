@@ -23,7 +23,7 @@ from sqlalchemy.types import String, Integer
 #     return Session
 
 
-#http://docs.sqlalchemy.org/en/rel_0_8/dialects/sqlite.html#foreign-key-support
+# http://docs.sqlalchemy.org/en/rel_0_8/dialects/sqlite.html#foreign-key-support
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
     """Turn on sqlite foreignkey support"""
@@ -49,6 +49,7 @@ class Base(declarative_base()):
     @property
     def query(self):
         return self.session.query(self.__class__)
+
 
 class MetaData(Base):
     __tablename__ = 'metadata'

@@ -7,7 +7,7 @@ def get_call_kwargs(cmd_fxn, params, input_map, output_map):
     sig = funcsigs.signature(cmd_fxn)
 
     def gen_params():
-        for keyword, param in sig.parameters.iteritems():
+        for keyword, param in sig.parameters.items():
             if keyword in input_map:
                 yield keyword, input_map[keyword]
             elif keyword in output_map:

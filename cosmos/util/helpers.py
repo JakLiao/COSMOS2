@@ -5,7 +5,6 @@ import signal
 import os
 import random
 import string
-
 import time
 
 def random_str(n):
@@ -89,20 +88,20 @@ def confirm(prompt=None, default=False, timeout=0):
     while True:
         signal.alarm(timeout)
         try:
-            ans = raw_input(prompt)
+            ans = input(prompt)
             signal.alarm(0)
             if not ans:
                 return default
             if ans not in ['y', 'Y', 'yes', 'n', 'no', 'N']:
-                print 'please enter y or n.'
+                print('please enter y or n.')
                 continue
             if ans in ['y', 'yes', 'Yes']:
                 return True
             if ans in ['n', 'no', 'N']:
                 return False
         except TimeOutException:
-            print "Confirmation timed out_dir after {0}s, returning default of '{1}'".format(timeout,
-                                                                                             'yes' if default else 'no')
+            print("Confirmation timed out_dir after {0}s, returning default of '{1}'".format(timeout,
+                                                                                             'yes' if default else 'no'))
             return default
 
 
@@ -160,7 +159,7 @@ def formatError(txt, dict, error_text=''):
         dash='-' * 76,
         dic=pprint.pformat(dict, indent=4),
         error_text=error_text + "\n")
-    print s
+    print(s)
 
 
 def get_logger(name, path=None):

@@ -31,6 +31,7 @@ from cosmos.core.cmd_fxn import signature
 
 from cosmos import TaskStatus, StageStatus, WorkflowStatus, signal_workflow_status_change
 from cosmos.models.Task import Task
+from six import string_types
 
 opj = os.path.join
 
@@ -127,7 +128,7 @@ class Workflow(Base):
         dirs = set()
 
         for task in self.tasks:
-            for out_name, v in task.output_map.iteritems():
+            for out_name, v in task.output_map.items():
                 dirname = lambda p: p if out_name.endswith('dir') or p is None else os.path.dirname(p)
 
                 if isinstance(v, (tuple, list)):
@@ -184,7 +185,7 @@ class Workflow(Base):
         # params
         if params is None:
             params = dict()
-        for k, v in params.iteritems():
+        for k, v in params.items():
             # decompose `Dependency` objects to values and parents
             new_val, parent_tasks = recursive_resolve_dependency(v)
 
@@ -193,11 +194,11 @@ class Workflow(Base):
 
         # uid
         if uid is None:
-            raise AssertionError, 'uid parameter must be specified'
+            raise AssertionError('uid parameter must be specified')
             # Fix me assert params are all JSONable
             # uid = str(params)
         else:
-            assert isinstance(uid, basestring), 'uid must be a string'
+            assert isinstance(uid, string_types), 'uid must be a string'
 
         if stage_name is None:
             stage_name = str(func.__name__)
@@ -245,7 +246,7 @@ class Workflow(Base):
             input_map = dict()
             output_map = dict()
 
-            for keyword, param in sig.parameters.iteritems():
+            for keyword, param in sig.parameters.items():
                 if keyword.startswith('in_'):
                     v = params.get(keyword, param.default)
                     assert v != funcsigs._empty, 'parameter %s for %s is required' % (param, func)
@@ -370,7 +371,7 @@ class Workflow(Base):
 
             # Create Task Queue
             task_queue = _copy_graph(task_graph)
-            self.log.info('Skipping %s successful tasks...' % len(successful))
+            self.log.info('Skipping %s successful tasks...' % len(list(successful)))
             task_queue.remove_nodes_from(successful)
 
             handle_exits(self)
@@ -494,10 +495,10 @@ class Workflow(Base):
         if delete_files:
             raise NotImplementedError('This should delete all Task.output_files')
 
-        print >> sys.stderr, '%s Deleting from SQL...' % self
+        print('%s Deleting from SQL...' % self, file=sys.stderr, )
         self.session.delete(self)
         self.session.commit()
-        print >> sys.stderr, '%s Deleted' % self
+        print(sys.stderr, '%s Deleted' % self, file=sys.stderr, )
 
     def get_first_failed_task(self, key=lambda t: t.finished_on):
         """
